@@ -84,4 +84,81 @@ class PersonControllerTest : AbstractIntegrationClass() {
         person?.gender = "Female"
     }
 
+    @Test
+    @Order(3)
+    fun updateCreate(){
+        person!!.lastName = "Rodriguez"
+
+        val content: String = given().spec(specification) //REST Assured
+            .contentType(TestConfig.CONTENT_TYPE)
+            .body(person)
+            .`when`()
+                .put()
+            .then()
+                .statusCode(200)
+                .extract()
+                    .body()
+                        .asString()
+
+        val updatedPerson = objectMapper!!.readValue(content, Person::class.java) //Desearilizar
+
+        person = updatedPerson
+
+        assertNotNull(updatedPerson.id)
+        assertNotNull(updatedPerson.firstName)
+        assertNotNull(updatedPerson.lastName)
+        assertNotNull(updatedPerson.address)
+        assertNotNull(updatedPerson.gender)
+        assertTrue(updatedPerson.id!! > 0)
+
+        assertEquals(person!!.id, updatedPerson.id)
+        assertEquals("Andrea", updatedPerson.firstName)
+        assertEquals("Rodriguez", updatedPerson.lastName)
+        assertEquals("Montreal, Canadá", updatedPerson.address)
+        assertEquals("Female", updatedPerson.gender)
+    }
+
+    @Test
+    @Order(4)
+    fun testFindById(){
+        val content: String = given().spec(specification) //REST Assured
+            .contentType(TestConfig.CONTENT_TYPE)
+            .pathParam("id", person!!.id)
+            .`when`()
+                .get("{id}")
+            .then()
+                .statusCode(200)
+                .extract()
+                    .body()
+                        .asString()
+
+        val foundedPerson = objectMapper!!.readValue(content, Person::class.java) //Desearilizar
+
+        person = foundedPerson
+
+        assertNotNull(foundedPerson.id)
+        assertNotNull(foundedPerson.firstName)
+        assertNotNull(foundedPerson.lastName)
+        assertNotNull(foundedPerson.address)
+        assertNotNull(foundedPerson.gender)
+        assertTrue(foundedPerson.id!! > 0)
+
+        assertEquals(person!!.id, foundedPerson.id)
+        assertEquals("Andrea", foundedPerson.firstName)
+        assertEquals("Rodriguez", foundedPerson.lastName)
+        assertEquals("Montreal, Canadá", foundedPerson.address)
+        assertEquals("Female", foundedPerson.gender)
+    }
+
+    @Test
+    @Order(5)
+    fun deletePerson(){
+        given().spec(specification) //REST Assured
+            .contentType(TestConfig.CONTENT_TYPE)
+            .pathParam("id", person!!.id)
+            .`when`()
+                .delete("{id}")
+            .then()
+                .statusCode(204)
+    }
 }
