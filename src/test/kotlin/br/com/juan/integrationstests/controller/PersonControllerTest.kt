@@ -5,6 +5,7 @@ import br.com.juan.model.Person
 import br.com.juan.testcontainers.AbstractIntegrationClass
 import io.restassured.RestAssured.given
 import io.restassured.builder.RequestSpecBuilder
+import io.restassured.common.mapper.TypeRef
 import io.restassured.filter.log.LogDetail
 import io.restassured.filter.log.RequestLoggingFilter
 import io.restassured.filter.log.ResponseLoggingFilter
@@ -160,5 +161,49 @@ class PersonControllerTest : AbstractIntegrationClass() {
                 .delete("{id}")
             .then()
                 .statusCode(204)
+    }
+
+    @Test
+    @Order(6)
+    fun testFindAll(){
+        val content = given().spec(specification) //REST Assured
+            .contentType(TestConfig.CONTENT_TYPE)
+            .`when`()
+            .get()
+                .then()
+                    .statusCode(200)
+                    .extract()
+                        .body()
+                        .`as`(object : TypeRef<java.util.List<Person?>?>(){})
+
+        val foundedPersonOne = content?.get(0)
+
+
+        assertNotNull(foundedPersonOne!!.id)
+        assertNotNull(foundedPersonOne.firstName)
+        assertNotNull(foundedPersonOne.lastName)
+        assertNotNull(foundedPersonOne.address)
+        assertNotNull(foundedPersonOne.gender)
+        assertTrue(foundedPersonOne.id!! > 0)
+
+        assertEquals("Leandro", foundedPersonOne.firstName)
+        assertEquals("Costa", foundedPersonOne.lastName)
+        assertEquals("Uberlândia - Minas Gerais - Brasil", foundedPersonOne.address)
+        assertEquals("Male", foundedPersonOne.gender)
+
+
+        val foundedPersonSix = content?.get(5)
+
+        assertNotNull(foundedPersonSix!!.id)
+        assertNotNull(foundedPersonSix.firstName)
+        assertNotNull(foundedPersonSix.lastName)
+        assertNotNull(foundedPersonSix.address)
+        assertNotNull(foundedPersonSix.gender)
+        assertTrue(foundedPersonSix.id!! > 0)
+
+        assertEquals("Marcos", foundedPersonSix.firstName)
+        assertEquals("Paulo", foundedPersonSix.lastName)
+        assertEquals("Patos de Minas - Minas Gerais - Brasil", foundedPersonSix.address)
+        assertEquals("Male", foundedPersonSix.gender)
     }
 }
