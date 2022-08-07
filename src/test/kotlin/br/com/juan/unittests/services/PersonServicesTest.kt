@@ -1,14 +1,15 @@
 package br.com.juan.unittests.services
 
 import br.com.erudio.unittests.mocks.MockPerson
+import br.com.juan.exception.RequiredObjectIsNullException
 import br.com.juan.model.Person
 import br.com.juan.repository.PersonRepository
 import br.com.juan.services.PersonServices
-import junit.framework.TestCase.assertEquals
-import junit.framework.TestCase.assertNotNull
+import junit.framework.TestCase.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
@@ -136,5 +137,27 @@ class PersonServicesTest {
         `when`(repository?.findById(1)).thenReturn(Optional.of(person)) //Quando encontre um repository definido no código
 
         service!!.delete(1)
+    }
+
+    @Test
+    fun testCreateWithNullPerson(){
+        val exception : Exception = assertThrows(
+            RequiredObjectIsNullException::class.java
+        ){  service!!.create(null)}
+
+        val expectedMessage = "It is not allowed to persist a null object"
+        val actualMessage = exception.message
+        assertTrue(actualMessage!!.contains(expectedMessage))
+    }
+
+    @Test
+    fun testUpdateWithNullPerson(){
+        val exception : Exception = assertThrows(
+            RequiredObjectIsNullException::class.java
+        ){  service!!.update(null)}
+
+        val expectedMessage = "It is not allowed to persist a null object"
+        val actualMessage = exception.message
+        assertTrue(actualMessage!!.contains(expectedMessage))
     }
 }
