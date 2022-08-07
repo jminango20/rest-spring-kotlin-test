@@ -20,8 +20,8 @@ open class AbstractIntegrationClass {
             val testContainers = MapPropertySource(
                 "testcontainers", createConnectionConfiguration()
             )
+            environment.propertySources.addFirst(testContainers)
         }
-
 
         companion object{
 
@@ -39,8 +39,5 @@ open class AbstractIntegrationClass {
                 Startables.deepStart(Stream.of(mysql)).join()
             }
         }
-
-
     }
-
 }
