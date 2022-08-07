@@ -88,4 +88,25 @@ class PersonServicesTest {
         assertEquals("Last Name Test1", result.lastName)
         assertEquals("Female", result.gender)
     }
+
+    @Test
+    fun testCreate(){
+        val entity = input!!.mockEntity(1)
+        entity.id = null
+
+        val persisted = entity.copy()
+        persisted.id = 1
+
+        `when`(repository?.save(entity)).thenReturn(persisted) //Quando encontre um repository definido no código
+
+        val result = service!!.create(entity)
+
+        assertNotNull(result)
+        assertNotNull(result.id)
+
+        assertEquals("Addres Test1", result.address)
+        assertEquals("First Name Test1", result.firstName)
+        assertEquals("Last Name Test1", result.lastName)
+        assertEquals("Female", result.gender)
+    }
 }
