@@ -15,6 +15,7 @@ import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
 import org.mockito.junit.jupiter.MockitoExtension
+import java.util.*
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS) //1 ciclo de vida por classe
 @ExtendWith(MockitoExtension::class)
@@ -70,5 +71,21 @@ class PersonServicesTest {
         assertEquals("First Name Test7", personSeven.firstName)
         assertEquals("Last Name Test7", personSeven.lastName)
         assertEquals("Female", personSeven.gender)
+    }
+
+    @Test
+    fun testFindById(){
+        val person = input!!.mockEntity(1)
+        `when`(repository?.findById(1)).thenReturn(Optional.of(person)) //Quando encontre um repository definido no código
+
+        val result = service!!.findById(1)
+
+        assertNotNull(result)
+        assertNotNull(result.id)
+
+        assertEquals("Addres Test1", result.address)
+        assertEquals("First Name Test1", result.firstName)
+        assertEquals("Last Name Test1", result.lastName)
+        assertEquals("Female", result.gender)
     }
 }
