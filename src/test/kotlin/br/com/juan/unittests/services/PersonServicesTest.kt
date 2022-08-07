@@ -129,4 +129,12 @@ class PersonServicesTest {
         assertEquals("Last Name Test1", result.lastName)
         assertEquals("Female", result.gender)
     }
+
+    @Test
+    fun testDelete(){
+        val person = input!!.mockEntity(1)
+        `when`(repository?.findById(1)).thenReturn(Optional.of(person)) //Quando encontre um repository definido no código
+
+        service!!.delete(1)
+    }
 }
